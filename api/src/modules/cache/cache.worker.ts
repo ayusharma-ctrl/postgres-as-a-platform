@@ -27,7 +27,7 @@ export function startCacheCleanupWorker(): void {
                 logger.info(`Cache cleanup removed ${deleted} expired entries`);
             }
         } catch (error) {
-            console.error("Cache cleanup failed:", error);
+            logger.error({ error }, "Cache cleanup failed:");
         }
     }, CLEANUP_INTERVAL_MS);
 }
