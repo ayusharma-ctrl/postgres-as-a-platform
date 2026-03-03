@@ -4,6 +4,7 @@ import { cacheModule } from "./cache/cache.module";
 import { pubsubModule } from "./pubsub/pubsub.module";
 import { rateLimitModule } from "./rate-limit/rate-limit.module";
 import { searchModule } from "./search/search.module";
+import { vectorModule } from "./vector/vector.module";
 
 const modules: Module[] = [
     queueModule,
@@ -11,6 +12,7 @@ const modules: Module[] = [
     pubsubModule,
     rateLimitModule,
     searchModule,
+    vectorModule,
 ];
 
 export async function initModules() {
