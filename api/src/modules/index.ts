@@ -5,6 +5,7 @@ import { pubsubModule } from "./pubsub/pubsub.module";
 import { rateLimitModule } from "./rate-limit/rate-limit.module";
 import { searchModule } from "./search/search.module";
 import { vectorModule } from "./vector/vector.module";
+import { eventBookingModule } from "./event-booking/event-booking.module";
 
 const modules: Module[] = [
     queueModule,
@@ -13,6 +14,7 @@ const modules: Module[] = [
     rateLimitModule,
     searchModule,
     vectorModule,
+    eventBookingModule,
 ];
 
 export async function initModules() {

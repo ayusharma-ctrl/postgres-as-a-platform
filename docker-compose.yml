@@ -28,7 +28,10 @@ services:
       sh -c "
       echo 'Running migrations...' &&
       npx sequelize-cli db:migrate &&
-      echo 'Migrations complete'
+      echo 'Migrations complete' &&
+      echo 'Running seeds...' &&
+      npx sequelize-cli db:seed:all &&
+      echo 'Seeds complete'
       "
     restart: "no"
 
