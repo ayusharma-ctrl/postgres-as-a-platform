@@ -64,11 +64,11 @@ Job.init(
         last_error: DataTypes.TEXT,
         created_at: {
             type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW
+            allowNull: false
         },
         updated_at: {
             type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW
+            allowNull: false
         },
     },
     {
