@@ -8,7 +8,8 @@ const schema = z.object({
   DB_USER: z.string(),
   DB_PASSWORD: z.string(),
   DB_NAME: z.string(),
-  DB_POOL_MAX: z.string()
+  DB_POOL_MAX: z.string(),
+  GEMINI_API_KEY: z.string(),
 });
 
 export const env = schema.parse(process.env);
