@@ -1,13 +1,41 @@
-import pdf from "pdf-parse";
 import mammoth from "mammoth";
+import PDFParser from "pdf2json";
 import { createHash } from "crypto";
 
+// SHA-256 hash of raw file bytes (deduplication key)
+export function hashBuffer(buffer: Buffer): string {
+    return createHash("sha256").update(buffer).digest("hex");
+}
 
+// Security: limit/cap individual chunk before sending to LLM, do not send entire data to LLM
+export function truncateContext(content: string, maxChars = 600): string {
+    if (content.length <= maxChars) return content;
+    return content.slice(0, maxChars) + "…";
+}
+
+// method to read text from pdf file
+const textFromPdf = async (fileBuffer: Buffer): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const pdfParser = new PDFParser(null, true);
+
+        pdfParser.on("pdfParser_dataReady", () => {
+            const parsedText = pdfParser.getRawTextContent();
+            resolve(parsedText);
+        });
+
+        pdfParser.on("pdfParser_dataError", () => {
+            reject(new Error("Failed to parse PDF"));
+        });
+
+        pdfParser.parseBuffer(fileBuffer);
+    });
+}
+
+// helper method to extract text from the uploaded file
 export async function extractTextFromFile(buffer: Buffer, mimeType: string): Promise<string> {
     try {
         if (mimeType === "application/pdf") {
-            const data = await (pdf as any)(buffer);
-            return data.text;
+            return await textFromPdf(buffer);
         }
 
         if (mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
@@ -21,7 +49,7 @@ export async function extractTextFromFile(buffer: Buffer, mimeType: string): Pro
     }
 }
 
-/* ── Sentence-aware chunking ──
+/* Sentence-aware chunking
  *
  * Strategy:
  *  1. Normalise whitespace / newlines
@@ -69,17 +97,6 @@ export function chunkText(text: string, chunkSize = 600, overlap = 50): string[]
         }
     }
 
-    // Discard micro-fragments that carry no semantic value
+    // discard micro-fragments that carry no semantic value
     return chunks.filter(c => c.trim().length >= 30);
-}
-
-/* ── SHA-256 hash of raw file bytes (deduplication key) ── */
-export function hashBuffer(buffer: Buffer): string {
-    return createHash("sha256").update(buffer).digest("hex");
-}
-
-/* ── Security: cap individual chunk before sending to LLM ── */
-export function truncateContext(content: string, maxChars = 600): string {
-    if (content.length <= maxChars) return content;
-    return content.slice(0, maxChars) + "…";
 }

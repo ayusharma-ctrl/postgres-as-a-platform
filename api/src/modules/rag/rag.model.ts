@@ -17,7 +17,7 @@ export class RagDocument extends Model<
     declare mime_type: string;
     declare file_hash: string;
     declare status: "pending" | "processing" | "done" | "failed";
-    declare total_chunks: number;
+    declare total_chunks: CreationOptional<number>;
     declare error_message: CreationOptional<string | null>;
     declare created_at: CreationOptional<Date>;
     declare updated_at: CreationOptional<Date>;
