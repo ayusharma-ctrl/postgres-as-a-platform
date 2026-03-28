@@ -7,6 +7,7 @@ import {
   JobRow
 } from "./queue.types";
 import { QueryTypes } from "sequelize";
+import { toSafeErrorMessage } from "../../utils/safeError";
 
 /* ------------------ ENQUEUE ------------------ */
 export async function enqueueJob<T extends JobType>(
@@ -78,7 +79,7 @@ export async function markFailure(
   await Job.update(
     {
       status: retry ? "pending" : "dead", // based on retry attempts
-      last_error: String(error),
+      last_error: toSafeErrorMessage(error, 1000),
       run_at: new Date(Date.now() + 10_000)
     },
     {

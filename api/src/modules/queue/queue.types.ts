@@ -8,9 +8,14 @@ export interface EmailJobPayload {
   subject?: string;
   body?: string;
 }
+export interface RAGInjestJobPayload {
+  docId: string;
+  bufferBase64: string;
+}
 
 export type JobPayloadMap = {
   email: EmailJobPayload;
+  rag_ingest: RAGInjestJobPayload,
 };
 
 export type JobType = keyof JobPayloadMap;

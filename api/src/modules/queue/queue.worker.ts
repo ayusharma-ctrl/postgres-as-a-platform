@@ -1,4 +1,6 @@
 import { logger } from "../../app";
+import { ingestDocument } from "../rag/rag.ingest";
+import { toSafeErrorMessage } from "../../utils/safeError";
 import {
   fetchNextJob,
   markFailure,
@@ -16,7 +18,18 @@ const handlers: HandlerMap = {
     logger.info({ payload: payload.to }, "Sending email");
     // we can throw error here to simulate job failed, retry logic
     // throw new Error('Method to send mails is not complete');
-  }
+  },
+  rag_ingest: async (payload) => {
+    try {
+      await ingestDocument(payload);
+    } catch (err) {
+      logger.error(
+        { docId: payload.docId, error: toSafeErrorMessage(err) },
+        "RAG ingestion error"
+      );
+      throw err;
+    }
+  },
 };
 
 // thi smethod will start the worker in background
